@@ -1,0 +1,6 @@
+namespace: cluster-autoscaler
+resources:
+- rendered.yaml
+- namespace.yaml
+patchesStrategicMerge:
+- patch-deployment.yaml

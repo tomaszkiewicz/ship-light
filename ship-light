@@ -1,0 +1,54 @@
+#!/bin/bash
+
+echo "ship-light"
+echo ""
+
+echo "working directory: " $(pwd)
+
+SHIP_REPO_CLONE_DIR=repo
+
+echo "loaded settings:"
+eval $(cat ship-light.conf)
+set | grep SHIP
+
+if [ ! -d $SHIP_REPO_CLONE_DIR ]; then
+  echo "repo not clonned, cloning"
+  git clone $SHIP_REPO $SHIP_REPO_CLONE_DIR
+else
+  echo "repo already cloned, updating"
+  CWD=$(pwd)
+  cd $SHIP_REPO_CLONE_DIR
+  git pull
+  cd $CWD
+fi
+
+# TODO only if subdirecotry of current repo
+if [ ! -f .gitignore ]; then
+  echo "repo" > .gitignore
+fi
+
+if [ ! -f values.yaml ]; then
+  echo "values.yaml not found, cloning default values"
+  cp repo/$SHIP_PATH/values.yaml .
+fi
+
+if [ ! -f kustomization.yaml ]; then
+  echo "kustomization.yaml not found, creating default one"
+  kubectl create ns $SHIP_NAMESPACE --dry-run -o yaml > namespace.yaml
+  touch rendered.yaml
+  echo "namespace: $SHIP_NAMESPACE" > kustomization.yaml
+  kustomize edit add resource rendered.yaml
+  kustomize edit add resource namespace.yaml
+fi
+
+echo "rendering template"
+helm template -f values.yaml --name $SHIP_RELEASE_NAME --namespace $SHIP_NAMESPACE repo/$SHIP_PATH | \
+  sed 's/RELEASE-NAME-//' | \
+  sed 's/RELEASE-NAME//' | \
+  sed 's/release: ""//' | \
+  sed 's/release: null//' | \
+  sed 's/release:$//' | \
+  sed 's/.*chart:.*$//' | \
+  grep -v Tiller > rendered.yaml
+
+echo "all done"

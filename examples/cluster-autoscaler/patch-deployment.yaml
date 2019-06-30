@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: aws-cluster-autoscaler
+    release: cluster-autoscaler
+  name: cluster-autoscaler-aws-cluster-autoscaler
+  namespace: cluster-autoscaler
+spec:
+  template:
+    spec:
+      containers:
+      - env:
+        - name: CLUSTER_NAME
+          value: k8s.aws.luktom.net
+        name: aws-cluster-autoscaler
