@@ -26,7 +26,7 @@ else
   cd $CWD
 fi
 
-# TODO only if subdirecotry of current repo
+# TODO only if subdirectory of current repo
 if [ ! -f .gitignore ]; then
   echo "repo" > .gitignore
 fi
@@ -38,12 +38,15 @@ fi
 
 if [ ! -f kustomization.yaml ]; then
   echo "kustomization.yaml not found, creating default one"
-  kubectl create ns $SHIP_NAMESPACE --dry-run -o yaml > namespace.yaml
+  kubectl create ns $SHIP_NAMESPACE --dry-run -o yaml | grep -v creationTimestamp > namespace.yaml
   touch rendered.yaml
   echo "namespace: $SHIP_NAMESPACE" > kustomization.yaml
   kustomize edit add resource rendered.yaml
   kustomize edit add resource namespace.yaml
 fi
+
+echo "building dependencies"
+helm dependencies build $SHIP_REPO_CLONE_DIR/$SHIP_PATH
 
 echo "rendering template"
 helm template -f values.yaml --name $SHIP_RELEASE_NAME --namespace $SHIP_NAMESPACE $SHIP_REPO_CLONE_DIR/$SHIP_PATH | \
