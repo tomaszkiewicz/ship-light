@@ -41,6 +41,7 @@ if [ ! -f kustomization.yaml ]; then
   kubectl create ns $SHIP_NAMESPACE --dry-run -o yaml | grep -v creationTimestamp > namespace.yaml
   touch rendered.yaml
   echo "namespace: $SHIP_NAMESPACE" > kustomization.yaml
+  echo "" >> kustomization.yaml
   kustomize edit add resource rendered.yaml
   kustomize edit add resource namespace.yaml
 fi
