@@ -26,6 +26,14 @@ else
   cd $CWD
 fi
 
+if [ -e .ship-commit ]; then
+  echo "checking out proper commit"
+  git checkout $(cat .ship-commit)
+else
+  echo "saving commit id"
+  git log --format="%H" -n 1 > .ship-commit
+fi
+
 # TODO only if subdirectory of current repo
 if [ ! -f .gitignore ]; then
   echo "repo" > .gitignore
