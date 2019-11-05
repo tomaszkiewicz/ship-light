@@ -26,6 +26,9 @@ else
   cd $CWD
 fi
 
+CWD=$(pwd)
+cd $SHIP_REPO_CLONE_DIR
+
 if [ -e .ship-commit ]; then
   echo "checking out proper commit"
   git checkout $(cat .ship-commit)
@@ -33,6 +36,8 @@ else
   echo "saving commit id"
   git log --format="%H" -n 1 > .ship-commit
 fi
+
+cd $CWD
 
 # TODO only if subdirectory of current repo
 if [ ! -f .gitignore ]; then
