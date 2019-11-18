@@ -33,6 +33,10 @@ if [ -e .ship-commit ]; then
   echo "checking out proper commit"
   git checkout $(cat .ship-commit)
 else
+  if [[ ! -z "$SHIP_DEFAULT_BRANCH" ]]; then
+    git checkout $SHIP_DEFAULT_BRANCH
+  fi
+
   echo "saving commit id"
   git log --format="%H" -n 1 > .ship-commit
 fi

@@ -48,3 +48,4 @@ ship-light saves commit of helm chart inside .ship-commit file. With current ver
 |SHIP_NAMESPACE|Overrides default namespace created by ship-light|No|basename $SHIP_PATH|
 |SHIP_RELEASE_NAME|Release name for helm chart (used by some charts)|No|basename $SHIP_PATH|
 |SHIP_REPO_CLONE_DIR|Path to place a repository with clonned helm chart|No|repo|
+|SHIP_DEFAULT_BRANCH|Default branch to checkout during initial clone|No|None|
