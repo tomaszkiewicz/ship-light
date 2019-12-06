@@ -38,7 +38,7 @@ else
   fi
 
   echo "saving commit id"
-  git log --format="%H" -n 1 > .ship-commit
+  git log --format="%H" -n 1 > ../.ship-commit
 fi
 
 cd $CWD
@@ -66,8 +66,12 @@ fi
 echo "building dependencies"
 helm dependencies build $SHIP_REPO_CLONE_DIR/$SHIP_PATH
 
+if [ -z $SHIP_CAPABILITIES_API ]; then
+  SHIP_CAPABILITIES_API="none"
+fi
+
 echo "rendering template"
-helm template -f values.yaml --name $SHIP_RELEASE_NAME --namespace $SHIP_NAMESPACE $SHIP_REPO_CLONE_DIR/$SHIP_PATH | \
+helm template -f values.yaml --name $SHIP_RELEASE_NAME --api-versions $SHIP_CAPABILITIES_API --namespace $SHIP_NAMESPACE $SHIP_REPO_CLONE_DIR/$SHIP_PATH | \
   sed 's/RELEASE-NAME-//' | \
   sed 's/RELEASE-NAME//' | \
   sed 's/release: ""//' | \
