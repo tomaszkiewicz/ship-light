@@ -49,3 +49,12 @@ ship-light saves commit of helm chart inside .ship-commit file. With current ver
 |SHIP_RELEASE_NAME|Release name for helm chart (used by some charts)|No|basename $SHIP_PATH|
 |SHIP_REPO_CLONE_DIR|Path to place a repository with clonned helm chart|No|repo|
 |SHIP_DEFAULT_BRANCH|Default branch to checkout during initial clone|No|None|
+
+## Hooks
+
+For corner cases, like rendering templates with duplicate service account names (see Kong repo; one service account is for pre-hook, the other is for the controller itself) ship-light supports executing user-provided scripts at some stages of execution.
+It supports the following hook scripts:
+
+- ship-light-prerender.sh - is executed just before rendering the output with helm templates
+
+The hook scripts should be places in the same directory as ship-light.conf and have to be executable.

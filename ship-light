@@ -66,6 +66,11 @@ fi
 echo "building dependencies"
 helm dependencies build $SHIP_REPO_CLONE_DIR/$SHIP_PATH
 
+if [ -x ship-light-prerender.sh ]; then
+  echo "executing prerender script"
+  ./ship-light-prerender.sh
+fi
+
 echo "rendering template"
 helm template -f values.yaml --name $SHIP_RELEASE_NAME --namespace $SHIP_NAMESPACE $SHIP_REPO_CLONE_DIR/$SHIP_PATH | \
   sed 's/RELEASE-NAME-//' | \
