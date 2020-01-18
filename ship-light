@@ -6,6 +6,7 @@ echo ""
 echo "working directory: " $(pwd)
 
 SHIP_REPO_CLONE_DIR=repo
+SHIP_DEFAULT_BRANCH=master
 
 eval $(cat ship-light.conf | grep SHIP_PATH)
 SHIP_RELEASE_NAME=$(basename $SHIP_PATH)
@@ -22,7 +23,7 @@ else
   echo "repo already cloned, updating"
   CWD=$(pwd)
   cd $SHIP_REPO_CLONE_DIR
-  git pull
+  git fetch
   cd $CWD
 fi
 
@@ -33,9 +34,7 @@ if [ -e .ship-commit ]; then
   echo "checking out proper commit"
   git checkout $(cat .ship-commit)
 else
-  if [[ ! -z "$SHIP_DEFAULT_BRANCH" ]]; then
-    git checkout $SHIP_DEFAULT_BRANCH
-  fi
+  git pull origin $SHIP_DEFAULT_BRANCH
 
   echo "saving commit id"
   git log --format="%H" -n 1 > .ship-commit
