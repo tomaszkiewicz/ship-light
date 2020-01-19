@@ -3,10 +3,12 @@
 echo "ship-light"
 echo ""
 
-echo "working directory: " $(pwd)
+CWD=$(pwd)
+echo "working directory: $CWD"
 
 SHIP_REPO_CLONE_DIR=repo
 SHIP_DEFAULT_BRANCH=master
+SHIP_COMMIT_FILE="$CWD/.ship-commit"
 
 eval $(cat ship-light.conf | grep SHIP_PATH)
 SHIP_RELEASE_NAME=$(basename $SHIP_PATH)
@@ -21,23 +23,21 @@ if [ ! -d $SHIP_REPO_CLONE_DIR ]; then
   git clone $SHIP_REPO $SHIP_REPO_CLONE_DIR
 else
   echo "repo already cloned, updating"
-  CWD=$(pwd)
   cd $SHIP_REPO_CLONE_DIR
   git fetch
   cd $CWD
 fi
 
-CWD=$(pwd)
 cd $SHIP_REPO_CLONE_DIR
 
-if [ -e .ship-commit ]; then
+if [ -e "$SHIP_COMMIT_FILE" ]; then
   echo "checking out proper commit"
-  git checkout $(cat .ship-commit)
+  git checkout $(cat $SHIP_COMMIT_FILE)
 else
   git pull origin $SHIP_DEFAULT_BRANCH
 
   echo "saving commit id"
-  git log --format="%H" -n 1 > .ship-commit
+  git log --format="%H" -n 1 > $SHIP_COMMIT_FILE
 fi
 
 cd $CWD
