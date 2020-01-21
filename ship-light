@@ -78,6 +78,8 @@ helm template -f values.yaml --name $SHIP_RELEASE_NAME --namespace $SHIP_NAMESPA
   sed 's/release: null//' | \
   sed 's/release:$//' | \
   sed 's/.*chart:.*$//' | \
+  sed 's/namespace:\s*$//' | \
+  sed 's/^\s*$//g' | \
   grep -v Tiller > rendered.yaml
 
 echo "all done"
