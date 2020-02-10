@@ -6,6 +6,11 @@ echo ""
 CWD=$(pwd)
 echo "working directory: $CWD"
 
+if [ ! -e "ship-light.conf" ]; then
+  echo "ship-light.conf not found in $CWD"
+  exit 1
+fi
+
 SHIP_REPO_CLONE_DIR=repo
 SHIP_DEFAULT_BRANCH=master
 SHIP_COMMIT_FILE="$CWD/.ship-commit"
